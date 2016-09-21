@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "google-cloud": "^0.40.0"
+    "google-cloud": "^0.40.0",
+    "twitter": "^1.4.0"
   }
 }
