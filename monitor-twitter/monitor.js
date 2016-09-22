@@ -31,8 +31,11 @@ function startSurvelliance(topic){
       topic.publish({
         data : {
           id : tweet.id_str,
+          user : tweet.user.name,
+          created_at : tweet.created_at,
           text : tweet.text,
-          coordinates : tweet.coordinates
+          latitude : tweet.coordinates.coordinates[0],
+          longtitude : tweet.coordinates.coordinates[1],
         }
       }, function(err, messageIds, apiResponse){
         if(err)
