@@ -38,6 +38,8 @@ import java.util.List;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +66,7 @@ public class StarterPipeline {
 	  TableReference tableRef = new TableReference();
 	  tableRef.setProjectId("in-full-gear");
 	  tableRef.setDatasetId("Dataset1");
-	  tableRef.setTableId("new_table");
+	  tableRef.setTableId("newest_table");
 	  return tableRef;
 	}
   
@@ -74,7 +76,7 @@ public class StarterPipeline {
 	  //fields.add(new TableFieldSchema().setName("user").setType("STRING"));
 	  fields.add(new TableFieldSchema().setName("text").setType("STRING"));
 	  fields.add(new TableFieldSchema().setName("created_at").setType("TIMESTAMP"));
-	  //fields.add(new TableFieldSchema().setName("latitude").setType("STRING"));
+	  fields.add(new TableFieldSchema().setName("latitude").setType("FLOAT"));
 	  //fields.add(new TableFieldSchema().setName("longtitude").setType("STRING"));
 	  TableSchema schema = new TableSchema().setFields(fields);
 	  return schema;
@@ -94,23 +96,23 @@ public class StarterPipeline {
 	pipeline.apply(PubsubIO.Read.topic(topic))
 	.apply(ParDo.of(new DoFn<String, TableRow>(){
 	      @Override
-	      public void processElement(ProcessContext c) {
-	    	/*Object obj=JSONValue.parse(c.element());
+	      public void processElement(ProcessContext c) {	    	
 	    	
-	    	JSONObject jsonObject = (JSONObject) obj;
-	    	
-	    	String id = (String) jsonObject.get("id");
-	    	String user = (String) jsonObject.get("user");
-	    	String created_at = (String) jsonObject.get("created_at");
-	    	String text = (String) jsonObject.get("text");
-	    	Double latitude = (Double) jsonObject.get("latitude");
-	    	Double longtitude = (Double) jsonObject.get("longtitude");
-	    	
-	    	TableRow row = new TableRow().set("id", id).set("text", text)
-	    			.set("user", user).set("created_at", created_at)
-	    			.set("longtitude", longtitude.toString()).set("latitude", latitude.toString());*/
-	    	  TableRow row = new TableRow().set("text", c.element()).set("created_at", c.timestamp().toString());
-	    	c.output(row);	    	  
+	    	TableRow row = new TableRow();
+	    	try{
+	    		JSONParser parser = new JSONParser();
+	    		Object obj = parser.parse(c.element());
+	    		JSONObject jsonObject = (JSONObject) obj;
+	    		String text = (String) jsonObject.get("text");
+	    		Double latitude = (Double) jsonObject.get("latitude");
+	    		row.set("text", text)
+	    		.set("created_at", c.timestamp().toString())
+	    		.set("latitude", latitude);
+	    	}
+	      	catch (ParseException e) {
+	      		row.set("text", e.toString()).set("created_at", c.timestamp().toString());
+	      	}
+		    c.output(row);	    	  
 	      }			
 	}))
 	.apply(BigQueryIO.Write.to(getTableReference()).withCreateDisposition(CreateDisposition.CREATE_IF_NEEDED).
