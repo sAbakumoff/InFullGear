@@ -40,7 +40,18 @@
       <artifactId>google-cloud-dataflow-java-sdk-all</artifactId>
       <version>[1.6.0, 2.0.0)</version>
     </dependency>
-
+    <!-- https://mvnrepository.com/artifact/com.google.apis/google-api-services-language -->
+    <dependency>
+        <groupId>com.google.apis</groupId>
+        <artifactId>google-api-services-language</artifactId>
+        <version>v1beta1-rev8-1.22.0</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
+    <dependency>
+        <groupId>com.googlecode.json-simple</groupId>
+        <artifactId>json-simple</artifactId>
+        <version>1.1.1</version>
+    </dependency>    
     <!-- slf4j API frontend binding with JUL backend -->
     <dependency>
       <groupId>org.slf4j</groupId>
