@@ -39,7 +39,7 @@ public class StarterPipeline {
 	  TableReference tableRef = new TableReference();
 	  tableRef.setProjectId("in-full-gear");
 	  tableRef.setDatasetId("Dataset1");
-	  tableRef.setTableId("Sep25");
+	  tableRef.setTableId("debates_tweets");
 	  return tableRef;
 	}
 
@@ -54,7 +54,7 @@ public class StarterPipeline {
 	}
 
   public static void main(String[] args) {
-	String topic = "projects/in-full-gear/topics/usa_tweets";
+	String topic = "projects/in-full-gear/topics/debates_tweets";
 	DataflowPipelineOptions options = PipelineOptionsFactory.as(DataflowPipelineOptions.class);
 	options.setTempLocation("gs://in-full-gear-temp");
 	options.setStreaming(true);

@@ -11,20 +11,22 @@ var client = new Twitter({
   access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
   access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
 });
-var topic = pubsub.topic('usa_tweets');
+
+var topic = pubsub.topic('debates_tweets');
 
 topic.get({autoCreate : true}, function(err, topic, apiResponse) {
   if(err){
     console.log('Error getting topic : ', err);
   }
   else{
-    startSurvelliance(topic)
+    startTracking(topic)
   }
 });
 
-function startSurvelliance(topic){
+function startTracking(topic){
   var isTweet = obj => obj && typeof obj.id_str === 'string' &&
-      typeof obj.text === 'string' && obj.place && obj.place.country_code==="US";
+      typeof obj.text === 'string' && obj.place &&
+      obj.place.country_code === "US" && obj.place.place_type === "city";
   var handleTweet = tweet => {
     if(isTweet(tweet)){
       topic.publish({
@@ -33,11 +35,11 @@ function startSurvelliance(topic){
       }, function(err, messageIds, apiResponse){
         if(err)
           return console.log("Error publishing : %s", err);
-        console.log("Message %s published", messageIds)
+        console.log("Message '%s' published", tweet.text);
       });
     }
   }
-  client.stream('statuses/filter', {track: 'Trump,Hillary,Clinton,debates' /* locations : "-74,40,-73,41" /* NY city */},  function(stream) {
+  client.stream('statuses/filter', {track: 'Trump,Clinton,debates,debates2016'},  function(stream) {
     stream.on('data', handleTweet);
     stream.on('error', console.log);
   });
