@@ -33,8 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class StarterPipeline {
-  private static final Logger LOG = LoggerFactory.getLogger(StarterPipeline.class);
-
   public static TableReference getTableReference() {
 	  TableReference tableRef = new TableReference();
 	  tableRef.setProjectId("in-full-gear");
@@ -67,7 +65,6 @@ public class StarterPipeline {
 	.apply(ParDo.of(new DoFn<String, TableRow>(){
 	      @Override
 	      public void processElement(ProcessContext c) {
-
 	    	TableRow row = new TableRow();
 	    	try{
 	    		JSONParser parser = new JSONParser();
@@ -101,6 +98,5 @@ public class StarterPipeline {
 	.apply(BigQueryIO.Write.to(getTableReference()).withCreateDisposition(CreateDisposition.CREATE_IF_NEEDED).
 			withWriteDisposition(WriteDisposition.WRITE_APPEND).withSchema(getSchema()));
 	pipeline.run();
-
   }
 }
