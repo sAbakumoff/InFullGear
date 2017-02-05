@@ -1,1 +1,1 @@
-# InFullGear
+The code that was used to write "Real-time analytics with Google Cloud" blog post at https://medium.com/@sAbakumoff/real-time-analytics-of-presidential-debate-feedback-with-google-cloud-2dc55bacb1da#.h3d8h2jxq
